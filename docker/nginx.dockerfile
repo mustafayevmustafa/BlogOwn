@@ -3,7 +3,7 @@ FROM nginx:stable-alpine
 ENV NGINXUSER=laravel
 ENV NGINXGROUP=laravel
 
-RUN mkdir -p /var/www/html/public/BlowOwn
+RUN mkdir -p /var/www/html/public/BlogOwn
 
 ADD ./docker/confs/nginx.conf /etc/nginx/conf.d/default.conf
 
