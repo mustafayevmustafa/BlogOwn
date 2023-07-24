@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+    nginx:
+        build:
+            context: .
+            dockerfile: ./docker/nginx.dockerfile
+        container_name: nginx
+        restart: unless-stopped
+        ports:
+            - 80:80
+        volumes:
+            - ./src:/var/www/html
+        depends_on:
+            - mysql
+            - php
+            - redis
+    redis:
+        image: redis:alpine
+        container_name: redis
+        restart: unless-stopped
+        command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
+        volumes:
+            - volume-redis:/data
+        ports:
+            - "6379:6379"
+    mysql:
+        image: mysql/mysql-server:8.0
+        container_name: mysql
+        restart: unless-stopped
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: ''
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ALLOW_EMPTY_PASSWORD: 0
+        volumes:
+            - volume-mysql-8.0:/var/lib/mysql
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
+            retries: 3
+            timeout: 5s
+    php:
+        image: parkcinema-php-base-image
+        build:
+            context: .
+            dockerfile: docker/php.dockerfile
+        container_name: php
+        restart: unless-stopped
+        volumes:
+            - ./src:/var/www/html
+        working_dir: /var/www/html
+    cron:
+        build:
+            context: .
+            dockerfile: docker/cron.dockerfile
+        container_name: cron
+        restart: unless-stopped
+        volumes:
+            - ./src:/var/www/html
+        working_dir: /var/www/html
+    composer:
+        build:
+            context: .
+            dockerfile: docker/composer.dockerfile
+        container_name: composer
+        volumes:
+            - ./src:/var/www/html
+        working_dir: /var/www/html
+    npm:
+        image: node:current-alpine
+        container_name: npm
+        volumes:
+            - ./src:/var/www/html
+        entrypoint: ["npm"]
+        working_dir: /var/www/html
+    artisan:
+        build:
+            context: .
+            dockerfile: docker/php.dockerfile
+        container_name: artisan
+        user: laravel
+        volumes:
+            - ./src:/var/www/html
+        working_dir: /var/www/html
+        depends_on:
+            - mysql
+        entrypoint: ["php", "/var/www/html/artisan"]
+    supervisor:
+        build:
+            context: .
+            dockerfile: docker/supervisor.dockerfile
+        container_name: supervisor
+        volumes:
+            - ./src:/var/www/html
+volumes:
+    volume-mysql-8.0:
+        driver: local
+    volume-redis:
+        driver: local
