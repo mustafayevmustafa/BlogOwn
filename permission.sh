@@ -1,4 +1,4 @@
-chown -R laravel:laravel . \
+sudo chown -R laravel:laravel . \
 && find . -type f -exec chmod 644 {} \; \
 && find . -type d -exec chmod 755 {} \; \
 && chgrp -R laravel storage bootstrap/cache \
