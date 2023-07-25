@@ -1,5 +1,6 @@
-sudo chown -R laravel:laravel .
-sudo find . -type f -exec chmod 644 {} \;
-sudo find . -type d -exec chmod 755 {} \;
-sudo chgrp -R laravel storage bootstrap/cache
-sudo chmod -R ug+rwx storage bootstrap/cache
+chown -R laravel:laravel . \
+&& find . -type f -exec chmod 644 {} \; \
+&& find . -type d -exec chmod 755 {} \; \
+&& chgrp -R laravel storage bootstrap/cache \
+&& chmod -R ug+rwx storage bootstrap/cache
+&& chmod 777 permission.sh
