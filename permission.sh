@@ -3,4 +3,3 @@ chown -R laravel:laravel . \
 && find . -type d -exec chmod 755 {} \; \
 && chgrp -R laravel storage bootstrap/cache \
 && chmod -R ug+rwx storage bootstrap/cache
-&& chmod 777 permission.sh
