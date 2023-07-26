@@ -88,13 +88,6 @@ services:
         depends_on:
             - mysql
         entrypoint: ["php", "/var/www/html/artisan"]
-    supervisor:
-        build:
-            context: .
-            dockerfile: docker/supervisor.dockerfile
-        container_name: supervisor
-        volumes:
-            - ./src:/var/www/html
 volumes:
     volume-mysql-8.0:
         driver: local
