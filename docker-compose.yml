@@ -10,7 +10,7 @@ services:
         ports:
             - 80:80
         volumes:
-            - ./src:/var/www/html
+            - ./src:/var/BlogOwn/html
         depends_on:
             - mysql
             - php
@@ -50,8 +50,8 @@ services:
         container_name: php
         restart: unless-stopped
         volumes:
-            - ./src:/var/www/html
-        working_dir: /var/www/html
+            - ./src:/var/www/BlogOwn
+        working_dir: /var/www/BlogOwn
     cron:
         build:
             context: .
